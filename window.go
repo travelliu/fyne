@@ -104,4 +104,43 @@ type Window interface {
 	//
 	// Deprecated: use App.Clipboard() instead.
 	Clipboard() Clipboard
+
+	// --- Custom additions below ---
+
+	// GetScreenRect returns the actual screen coordinates and size of the window,
+	// including title bar and borders. This can be useful for precise placement
+	// or interacting with external window managers.
+	// The coordinates are in screen pixels.
+	// Returns an error if the operation is not supported or fails on the current platform.
+	//
+	// Since: <your_desired_version, e.g., 2.X.X-dev>
+	GetScreenRect() (Position, Size)
+
+	// GetNativeHandle returns the underlying platform-specific window handle (HWND on Windows, NSWindow* on macOS, XID on Linux).
+	// This is for advanced use cases where direct platform API interaction is needed
+	// (e.g., embedding external native libraries or custom window manager interactions).
+	// The type of the returned handle depends on the OS:
+	// - Windows: `uintptr` (an HWND)
+	// - macOS: `unsafe.Pointer` (an NSWindow*)
+	// - Linux (X11): `uintptr` (an XID)
+	// Applications should type-assert this to the appropriate platform-specific type.
+	// Returns nil if the driver does not support exposing the native handle or if the window is not yet created.
+	//
+	// Since: <your_desired_version, e.g., 2.X.X-dev>
+	GetNativeHandle() any
+
+	// SetPosition moves the entire window to a new screen coordinate.
+	// The position is relative to the top-left corner of the primary screen.
+	// This method moves the entire window, including its title bar and borders.
+	//
+	// Since: <your_desired_version, e.g., 2.X.X-dev>
+	SetPosition(pos Position)
+
+	// SetWindowOnPositionChanged sets a function that is called when the window is moved.
+	// This includes user drag operations and programmatic position changes.
+	// The position reported is the top-left corner of the window's content area (client area).
+	// To get the full window position, use GetScreenRect().
+	//
+	// Since: <your_desired_version, e.g., 2.X.X-dev>
+	SetWindowOnPositionChanged(func(pos Position))
 }

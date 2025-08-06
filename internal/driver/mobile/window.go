@@ -207,3 +207,23 @@ func (w *window) RescaleContext() {
 func (w *window) Context() any {
 	return fyne.CurrentApp().Driver().(*driver).glctx
 }
+
+func (w *window) GetScreenRect() (fyne.Position, fyne.Size) {
+	return fyne.Position{}, fyne.NewSize(0, 0)
+}
+
+func (w *window) GetNativeHandle() any {
+	return nil
+}
+
+// SetPosition moves the entire window to a new screen coordinate.
+// The position is relative to the top-left corner of the primary screen.
+// This method moves the entire window, including its title bar and borders.
+//
+// Since: <your_desired_version, e.g., 2.X.X-dev>
+func (w *window) SetPosition(pos fyne.Position) {
+	return
+}
+
+func (w *window) SetWindowOnPositionChanged(func(pos fyne.Position)) {
+}

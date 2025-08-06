@@ -163,8 +163,14 @@ func (d *gLDriver) runGL() {
 				}
 
 				expand := w.shouldExpand
+				setPosition := w.shouldSetPosition
 				fullScreen := w.fullScreen
 
+				if setPosition && !fullScreen {
+					view := w.viewport
+					w.shouldSetPosition = false
+					view.SetPos(w.requestedX, w.requestedY)
+				}
 				if expand && !fullScreen {
 					w.fitContent()
 					shouldExpand := w.shouldExpand

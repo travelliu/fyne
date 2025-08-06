@@ -263,13 +263,16 @@ func (w *window) processMoved(x, y int) {
 		// save coordinates
 		w.xpos, w.ypos = x, y
 	}
-
+	if w.onPositionChanged != nil {
+		w.onPositionChanged(fyne.NewPos(float32(x), float32(y)))
+	}
 	if w.canvas.detectedScale == w.detectScale() {
 		return
 	}
 
 	w.canvas.detectedScale = w.detectScale()
 	w.canvas.reloadScale()
+
 }
 
 func (w *window) processResized(width, height int) {
@@ -992,4 +995,10 @@ func isKeyModifier(keyName fyne.KeyName) bool {
 		keyName == desktop.KeyControlLeft || keyName == desktop.KeyControlRight ||
 		keyName == desktop.KeyAltLeft || keyName == desktop.KeyAltRight ||
 		keyName == desktop.KeySuperLeft || keyName == desktop.KeySuperRight
+}
+
+func (w *window) SetPosition(pos fyne.Position) {
+	w.requestedX = int(pos.X)
+	w.requestedY = int(pos.Y)
+	w.runOnMainWhenCreated(w.handlePosition)
 }

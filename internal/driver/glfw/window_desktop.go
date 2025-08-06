@@ -5,13 +5,6 @@ package glfw
 import (
 	"bytes"
 	"context"
-	"image"
-	_ "image/png" // for the icon
-	"os"
-	"runtime"
-	"strings"
-	"time"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -24,6 +17,12 @@ import (
 	"fyne.io/fyne/v2/internal/scale"
 	"fyne.io/fyne/v2/internal/svg"
 	"fyne.io/fyne/v2/storage"
+	"image"
+	_ "image/png" // for the icon
+	"os"
+	"runtime"
+	"strings"
+	"time"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -101,6 +100,7 @@ type window struct {
 
 	onClosed           func()
 	onCloseIntercepted func()
+	onPositionChanged  func(fyne.Position)
 
 	menuTogglePending       fyne.KeyName
 	menuDeactivationPending fyne.KeyName
@@ -108,10 +108,11 @@ type window struct {
 	xpos, ypos                      int
 	width, height                   int
 	requestedWidth, requestedHeight int
+	requestedX, requestedY          int
 	shouldWidth, shouldHeight       int
 	shouldExpand                    bool
-
-	pending []func()
+	shouldSetPosition               bool
+	pending                         []func()
 
 	lastWalkedTime time.Time
 }
@@ -821,4 +822,35 @@ func (w *window) view() *glfw.Window {
 // wrapInnerWindow is a no-op to match what the web driver provides
 func wrapInnerWindow(*container.InnerWindow, fyne.Window, *gLDriver) fyne.Window {
 	return nil
+}
+
+func (w *window) GetScreenRect() (fyne.Position, fyne.Size) {
+	if w.viewport == nil {
+		return fyne.Position{}, fyne.Size{}
+	}
+	x, y := w.viewport.GetPos()
+	return fyne.Position{X: float32(x), Y: float32(y)}, fyne.Size{}
+}
+
+func (w *window) GetNativeHandle() any {
+	if w.viewport == nil {
+		return nil
+	}
+	// Use runtime.GOOS to return the correct type for each OS
+	if runtime.GOOS == "windows" {
+		return w.viewport.GetWin32Window() // Returns uintptr (HWND)
+	}
+	return nil // Unsupported platform
+}
+
+func (w *window) handlePosition() {
+	if w.viewport == nil {
+		return
+	}
+	w.shouldExpand = true
+	w.viewport.SetPos(w.requestedX, w.requestedY)
+}
+
+func (w *window) SetWindowOnPositionChanged(do func(pos fyne.Position)) {
+	w.onPositionChanged = do
 }
