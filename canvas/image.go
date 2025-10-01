@@ -151,9 +151,9 @@ func (i *Image) Refresh() {
 		width := size.Width
 		height := size.Height
 
-		if width == 0 || height == 0 {
-			return
-		}
+		// if width == 0 || height == 0 {
+		// 	return
+		// }
 
 		if i.isSVG {
 			tex, err := i.renderSVG(width, height)
