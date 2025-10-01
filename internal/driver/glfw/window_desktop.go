@@ -5,6 +5,13 @@ package glfw
 import (
 	"bytes"
 	"context"
+	"image"
+	_ "image/png" // for the icon
+	"os"
+	"runtime"
+	"strings"
+	"time"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -17,12 +24,6 @@ import (
 	"fyne.io/fyne/v2/internal/scale"
 	"fyne.io/fyne/v2/internal/svg"
 	"fyne.io/fyne/v2/storage"
-	"image"
-	_ "image/png" // for the icon
-	"os"
-	"runtime"
-	"strings"
-	"time"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -833,14 +834,7 @@ func (w *window) GetScreenRect() (fyne.Position, fyne.Size) {
 }
 
 func (w *window) GetNativeHandle() any {
-	if w.viewport == nil {
-		return nil
-	}
-	// Use runtime.GOOS to return the correct type for each OS
-	if runtime.GOOS == "windows" {
-		return w.viewport.GetWin32Window() // Returns uintptr (HWND)
-	}
-	return nil // Unsupported platform
+	return nil
 }
 
 func (w *window) handlePosition() {

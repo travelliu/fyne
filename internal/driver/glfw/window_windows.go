@@ -67,3 +67,14 @@ func (w *window) RunNative(f func(any)) {
 
 	f(context)
 }
+
+func (w *window) GetNativeHandle() any {
+	if w.viewport == nil {
+		return nil
+	}
+	// Use runtime.GOOS to return the correct type for each OS
+	if runtime.GOOS == "windows" {
+		return w.viewport.GetWin32Window() // Returns uintptr (HWND)
+	}
+	return nil // Unsupported platform
+}
