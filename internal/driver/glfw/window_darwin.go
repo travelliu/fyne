@@ -36,3 +36,7 @@ func (w *window) doSetFullScreen(full bool) {
 		return
 	}
 }
+
+func (w *window) GetNativeHandle() any {
+	return nil
+}

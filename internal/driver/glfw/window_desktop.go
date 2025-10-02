@@ -833,10 +833,6 @@ func (w *window) GetScreenRect() (fyne.Position, fyne.Size) {
 	return fyne.Position{X: float32(x), Y: float32(y)}, fyne.Size{}
 }
 
-func (w *window) GetNativeHandle() any {
-	return nil
-}
-
 func (w *window) handlePosition() {
 	if w.viewport == nil {
 		return
